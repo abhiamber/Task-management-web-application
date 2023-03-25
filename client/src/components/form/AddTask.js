@@ -16,7 +16,7 @@ let task = {
   title: "",
   content: "",
   contributors: "",
-  createdBy: "641e0ae624e37696d3d44b7d",
+  // createdBy: "641e0ae624e37696d3d44b7d",
   dueDate: "",
   color: "",
 };
@@ -25,15 +25,15 @@ let userContent;
 let changeColumnTitle = (number) => {
   // console.log(number);
   let newTitle;
-  if (number === "1") newTitle = "Backlog";
-  else if (number === "2") newTitle = "ToDo";
-  else if (number === "3") newTitle = "In Progress";
+  if (number === 1) newTitle = "Backlog";
+  else if (number === 2) newTitle = "ToDo";
+  else if (number === 3) newTitle = "In Progress";
   else newTitle = "Done";
 
   return newTitle;
 };
 const AddModal = (props) => {
-  // console.log(props.setShowFunc);
+  // console.log(props);
   let [modal, setModal] = useState(false);
   let [users, setUsers] = useState([]);
 
@@ -48,10 +48,8 @@ const AddModal = (props) => {
       .then((r) => {
         // console.log(r, "");
         setUsers(r.data);
-        // setTask({ ...tasks, users: r.data, err: "" });
       })
       .catch((e) => {
-        // setTask({ ...tasks, err: e });
         console.log(e);
       });
   };
@@ -65,7 +63,7 @@ const AddModal = (props) => {
         dueDate: tasks.dueDate,
         color: tasks.color,
         storyId: props.storyType,
-        createdBy: tasks.createdBy,
+        createdBy: props.storyName[0].createdBy,
       })
       .then((response) => {
         if (response.data.message) alert(response.data.message);
@@ -95,6 +93,8 @@ const AddModal = (props) => {
   useEffect(() => {
     getUsers();
   }, []);
+
+  // console.log(creartor);
 
   if (users.length === 0) userContent = <option value="">Loading...</option>;
   else {

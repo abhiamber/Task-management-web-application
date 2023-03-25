@@ -2,7 +2,7 @@ import Task from "./Task";
 import Tooltips from "./Tooltip";
 
 export const Story = (props) => {
-  // console.log(props);
+  // console.log(props.storyName[0]);
   return (
     <div className="container">
       <div className="space">
@@ -20,6 +20,7 @@ export const Story = (props) => {
               content="You can do what you want to do with this column"
               placement="top"
               storyType={props.storyType}
+              storyName={props.storyName}
             />
           </div>
           <Task
@@ -33,6 +34,7 @@ export const Story = (props) => {
           <div className="mcell-title story">
             <b className="fas fa-bars" /> TODO
             <Tooltips
+              storyName={props.storyName}
               setShowFunc={props.setShowFunc}
               id={2}
               content="You can do what you want to do with this column"
@@ -52,6 +54,7 @@ export const Story = (props) => {
           <div className="mcell-title story">
             <b className="fas fa-spinner"></b> In Progress
             <Tooltips
+              storyName={props.storyName}
               setShowFunc={props.setShowFunc}
               id={3}
               content="You can do what you want to do with this column"
@@ -70,6 +73,7 @@ export const Story = (props) => {
           <div className="mcell-title story">
             <b className="fas fa-check" /> Done
             <Tooltips
+              storyName={props.storyName}
               setShowFunc={props.setShowFunc}
               id={4}
               content="You can do what you want to do with this column"

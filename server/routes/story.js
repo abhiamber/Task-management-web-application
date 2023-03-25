@@ -44,6 +44,17 @@ router.get("/", (req, res) => {
     });
 });
 //Story Update
+router.get("/:id", (req, res) => {
+  const promise = StoryModel.findOne({ storyId: parseInt(req.params.id) });
+  promise
+    .then((data) => {
+      if (!data) res.json({ message: [], code: 5 });
+      res.json(data);
+    })
+    .catch((err) => {
+      res.json(err);
+    });
+});
 
 //Story delete
 router.delete("/delete/:id", (req, res) => {

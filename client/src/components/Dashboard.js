@@ -78,7 +78,7 @@ const Dashboard = () => {
         </ul>
 
         <div className="otherMenu">
-          <AddStory setShowFunc={getData} />
+          <AddStory setShowFunc={getStoryDetails} />
         </div>
       </div>
       <div className="con">

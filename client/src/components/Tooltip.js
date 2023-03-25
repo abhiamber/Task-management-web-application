@@ -29,6 +29,7 @@ const Tooltips = (props) => {
         setShowFunc={props.setShowFunc}
         storyType={props.storyType}
         status={props.id}
+        storyName={props.storyName}
       />
     </span>
   );

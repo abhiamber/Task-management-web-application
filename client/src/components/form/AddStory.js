@@ -40,8 +40,6 @@ const AddStory = ({ setShowFunc }) => {
       });
   };
   let handleClick = async () => {
-    // await getStoryCount();
-
     axios
       .post(`${API}/story`, {
         title,
@@ -56,11 +54,11 @@ const AddStory = ({ setShowFunc }) => {
           setCreatedBy(null);
         }
         // console.log(response);
+        setShowFunc();
       })
       .catch((error) => {
         console.log(error);
       });
-    setShowFunc();
     toggle();
   };
   let toggle = () => {

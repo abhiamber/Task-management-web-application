@@ -1,5 +1,8 @@
 var createError = require("http-errors");
 var express = require("express");
+require("dotenv").config();
+let PORT = process.env.PORT || 8080;
+
 var cookieParser = require("cookie-parser");
 
 var indexRouter = require("./routes/index");
@@ -20,7 +23,7 @@ app.use("/users", usersRouter);
 app.use("/tasks", tasksRouter);
 app.use("/story", storiesRouter);
 
-app.listen(8080, async () => {
+app.listen(PORT, async () => {
   await connect();
   console.log("server is working");
 });
