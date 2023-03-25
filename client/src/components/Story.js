@@ -2,11 +2,12 @@ import Task from "./Task";
 import Tooltips from "./Tooltip";
 
 export const Story = (props) => {
+  // console.log(props);
   return (
     <div className="container">
       <div className="space">
         <h2 className="story">
-          {props.storyName[0] ? props.storyName[0].title : "Loading..."}
+          {props.storyName[0] ? props.storyName[0].title : "Select or Create"}
         </h2>
       </div>
       <div className="row">

@@ -36,11 +36,11 @@ const ModalExample = ({ propContent, classType, setShowFunc }) => {
           setContent(null);
         }
         console.log(response);
+        setShowFunc();
       })
       .catch((error) => {
         console.log(error);
       });
-    setShowFunc();
   };
   let toggle = () => {
     setModal(!modal);

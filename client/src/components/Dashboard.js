@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "./common/Header";
 
-import { Link, useParams } from "react-router-dom";
-import Loader from "./Loader";
+import { Link } from "react-router-dom";
 import AddStory from "./form/AddStory";
 import { Story } from "./Story";
 import { API } from "../API";
@@ -11,16 +10,10 @@ import { API } from "../API";
 let storyTable;
 
 const Dashboard = () => {
-  let [id, setId] = useState(2);
-  let [show, setShow] = useState(true);
+  let [id, setId] = useState(Number(localStorage.getItem("id")) || 1);
   let [task, setTask] = useState([]);
   let [stories, setStories] = useState([]);
-  let [err, setErr] = useState("");
-  let [err2, setErr2] = useState("");
   let [loading, setLoading] = useState(true);
-  // let params = useParams();
-  // console.log(params, "cxv");
-  // let [loadingStory, setLoadingStories] = useState(true);
 
   let getStoryDetails = () => {
     axios
@@ -28,20 +21,20 @@ const Dashboard = () => {
       .then((r) => {
         // console.log(r.data, "nnhjbhj");
         setStories(r.data);
-        setErr2("");
       })
 
       .catch((e) => {
-        setErr2(e);
+        console.log(e);
       });
   };
+
+  // ****************get task***********
   let getData = () => {
     axios
-      .get(`${API}/tasks/1`)
+      .get(`${API}/tasks/${id}`)
       .then((r) => {
-        console.log(r.data, "bj");
+        // console.log(r.data, "bj", id);
         setTask(r.data);
-        setErr("");
       })
       .then(() => {
         setLoading(false);
@@ -49,39 +42,16 @@ const Dashboard = () => {
       .catch((e) => {
         if (!e.response) {
           setLoading(true);
-          setErr(e);
         } else setLoading(false);
-        setErr(e);
       });
   };
   useEffect(() => {
     getStoryDetails();
     getData();
-    // setInterval(() => {
-    //   getData();
-    // }, 2000);
-  }, []);
+    localStorage.setItem("id", id);
+  }, [id]);
 
-  // if (!loadingStory)
-  //   storyTable = stories.map((story, index) => {
-  //     return (
-  //       <li key={index}>
-  //         <Link to={`/story/${story.storyId}`} activeClassName="active">
-  //           <i className="fas fa-list-alt"></i>
-  //           <span className="menu-text">{story.title}</span>
-  //         </Link>
-  //       </li>
-  //     );
-  //   });
-  // else
-  //   storyTable = (
-  //     <li>
-  //       <div className="loader">
-  //         <Loader />
-  //       </div>
-  //     </li>
-  //   );
-  // console.log(id);
+  // console.log(typeof id);
   return (
     <div>
       <div className="side">
@@ -95,7 +65,7 @@ const Dashboard = () => {
               <li
                 key={index}
                 onClick={() => {
-                  setId(story.storyId);
+                  setId(Number(story.storyId));
                 }}
               >
                 <Link to={`/story/${story.storyId}`} activeClassName="active">
@@ -108,16 +78,16 @@ const Dashboard = () => {
         </ul>
 
         <div className="otherMenu">
-          <AddStory setShowFunc={getStoryDetails} />
+          <AddStory setShowFunc={getData} />
         </div>
       </div>
       <div className="con">
-        <Header />
+        <Header setId={setId} />
         <aside>
           <Story
-            setShowFunc={getStoryDetails}
+            setShowFunc={getData}
             storyName={stories.filter((i) => i.storyId === id)}
-            storyType={1}
+            storyType={id}
             tasks={task}
             loading={loading}
           />

@@ -33,6 +33,7 @@ let changeColumnTitle = (number) => {
   return newTitle;
 };
 const AddModal = (props) => {
+  // console.log(props.setShowFunc);
   let [modal, setModal] = useState(false);
   let [users, setUsers] = useState([]);
 
@@ -78,13 +79,14 @@ const AddModal = (props) => {
             loading: false,
           });
         }
+        props.setShowFunc("jnk,");
+
         console.log(response);
       })
       .catch((error) => {
         console.log(error);
       });
     toggle();
-    props.setShowFunc();
   };
   let toggle = () => {
     getUsers();

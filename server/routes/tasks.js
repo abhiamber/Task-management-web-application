@@ -34,6 +34,7 @@ router.get("/counter", (req, res) => {
 
 //taskları ve contributorsunu yazar
 router.get("/:id", (req, res) => {
+  // console.log(req.params.id);
   const promise = TaskModel.aggregate([
     {
       $match: {
