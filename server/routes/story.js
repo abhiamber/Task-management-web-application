@@ -45,12 +45,12 @@ router.get("/", (req, res) => {
 });
 //Story Update
 
-//Story silme
+//Story delete
 router.delete("/delete/:id", (req, res) => {
   const promise = StoryModel.findByIdAndRemove(req.params.id);
   promise
     .then((count) => {
-      if (count == null) res.json({ status: "0" }); //zaten silinmiş ise 0
+      if (count == null) res.json({ status: "0" });
       res.json({ status: "1" });
     })
     .catch((err) => {

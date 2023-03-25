@@ -28,12 +28,12 @@ router.get("/", (req, res, next) => {
 });
 //User Update
 
-//User silme
+//User delete
 router.delete("/delete/:id", (req, res) => {
   const promise = User.findByIdAndRemove(req.params.id);
   promise
     .then((count) => {
-      if (count == null) res.json({ status: "0" }); //zaten silinmiş ise 0
+      if (count == null) res.json({ status: "0" });
       res.json({ status: "1" });
     })
     .catch((err) => {

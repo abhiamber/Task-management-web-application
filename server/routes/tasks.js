@@ -13,7 +13,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-//Hangi statusta kaç tane task olduğunu gösterir
 router.get("/counter", (req, res) => {
   const promise = TaskModel.aggregate([
     {
@@ -32,9 +31,7 @@ router.get("/counter", (req, res) => {
     });
 });
 
-//taskları ve contributorsunu yazar
 router.get("/:id", (req, res) => {
-  // console.log(req.params.id);
   const promise = TaskModel.aggregate([
     {
       $match: {
@@ -93,7 +90,7 @@ router.get("/:id", (req, res) => {
       res.json(err);
     });
 });
-//tek task yazar
+//for testign no used
 router.get("/task/:id", (req, res) => {
   const promise = TaskModel.aggregate([
     {
@@ -153,7 +150,7 @@ router.get("/task/:id", (req, res) => {
       res.json(err);
     });
 });
-//todo
+//todo update
 router.put("/update/:id", (req, res) => {
   const promise = TaskModel.findByIdAndUpdate(req.params.id, req.body);
   promise
@@ -165,12 +162,12 @@ router.put("/update/:id", (req, res) => {
     });
 });
 
-//Task silme
+//Task Deelete
 router.delete("/delete/:id", (req, res) => {
   const promise = TaskModel.findByIdAndRemove(req.params.id);
   promise
     .then((count) => {
-      if (count == null) res.json({ status: "0" }); //zaten silinmiş ise 0
+      if (count == null) res.json({ status: "0" });
       res.json({ status: "1" });
     })
     .catch((err) => {
