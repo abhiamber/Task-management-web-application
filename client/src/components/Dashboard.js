@@ -1,53 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "./common/Header";
 
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Loader from "./Loader";
 import AddStory from "./form/AddStory";
 import { Story } from "./Story";
+import { API } from "../API";
 
 let storyTable;
 
 const Dashboard = () => {
-  let [open, setOpen] = useState(false);
+  let [id, setId] = useState(2);
   let [show, setShow] = useState(true);
   let [task, setTask] = useState([]);
   let [stories, setStories] = useState([]);
   let [err, setErr] = useState("");
   let [err2, setErr2] = useState("");
   let [loading, setLoading] = useState(true);
-  let [loadingStory, setLoadingStories] = useState(true);
-  let componentDidMount = () => {
-    getStoryDetails();
-    getData();
-    setInterval(() => {
-      getData();
-    }, 2000);
-  };
+  // let params = useParams();
+  // console.log(params, "cxv");
+  // let [loadingStory, setLoadingStories] = useState(true);
 
   let getStoryDetails = () => {
     axios
-      .get(`/story`)
+      .get(`${API}/story`)
       .then((r) => {
-        console.log(r.data, "nnhjbhj");
-        setStories([]);
+        // console.log(r.data, "nnhjbhj");
+        setStories(r.data);
         setErr2("");
       })
-      .then(() => {
-        setLoadingStories(false);
-      })
-      .catch((e) => {
-        setLoadingStories(true);
 
+      .catch((e) => {
         setErr2(e);
       });
   };
   let getData = () => {
     axios
-      .get(`/tasks/${this.props.params.id}`)
+      .get(`${API}/tasks/1`)
       .then((r) => {
-        setTask([]);
+        console.log(r.data, "bj");
+        setTask(r.data);
         setErr("");
       })
       .then(() => {
@@ -61,43 +54,70 @@ const Dashboard = () => {
         setErr(e);
       });
   };
+  useEffect(() => {
+    getStoryDetails();
+    getData();
+    // setInterval(() => {
+    //   getData();
+    // }, 2000);
+  }, []);
 
-  if (!loadingStory)
-    storyTable = stories.map((story, index) => {
-      return (
-        <li key={index}>
-          <Link to={`/story/${story.storyId}`} activeClassName="active">
-            <i className="fas fa-list-alt"></i>
-            <span className="menu-text">{story.title}</span>
-          </Link>
-        </li>
-      );
-    });
-  else
-    storyTable = (
-      <li>
-        <div className="loader">
-          <Loader />
-        </div>
-      </li>
-    );
+  // if (!loadingStory)
+  //   storyTable = stories.map((story, index) => {
+  //     return (
+  //       <li key={index}>
+  //         <Link to={`/story/${story.storyId}`} activeClassName="active">
+  //           <i className="fas fa-list-alt"></i>
+  //           <span className="menu-text">{story.title}</span>
+  //         </Link>
+  //       </li>
+  //     );
+  //   });
+  // else
+  //   storyTable = (
+  //     <li>
+  //       <div className="loader">
+  //         <Loader />
+  //       </div>
+  //     </li>
+  //   );
+  // console.log(id);
   return (
     <div>
       <div className="side">
-        <span className="logo">Scrum Beta</span>
+        <span className="logo">Task Manger</span>
 
-        <ul className="side-menu">{storyTable}</ul>
+        <ul className="side-menu">
+          {storyTable}
+
+          {stories.map((story, index) => {
+            return (
+              <li
+                key={index}
+                onClick={() => {
+                  setId(story.storyId);
+                }}
+              >
+                <Link to={`/story/${story.storyId}`} activeClassName="active">
+                  <i className="fas fa-list-alt"></i>
+                  <span className="menu-text">{story.title}</span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
 
         <div className="otherMenu">
-          <AddStory />
+          <AddStory setShowFunc={getStoryDetails} />
         </div>
       </div>
       <div className="con">
         <Header />
         <aside>
           <Story
-            storyName={stories.filter((i) => i.storyId === 2)}
-            storyType={2}
+            setShowFunc={getStoryDetails}
+            storyName={stories.filter((i) => i.storyId === id)}
+            storyType={1}
             tasks={task}
             loading={loading}
           />

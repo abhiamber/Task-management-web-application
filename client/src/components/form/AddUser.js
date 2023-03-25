@@ -10,27 +10,28 @@ import {
   Label,
 } from "reactstrap";
 import axios from "axios";
+import { API } from "../../API";
 
 let useDetails = {
-  modal: false,
   username: "",
   name: "",
   lastname: "",
-  profilePhoto: "5af1921c0fe5703dd4a463ec",
-  loading: false,
+  profilePhoto: "",
 };
 
 const AddUser = () => {
   let [useData, setUserData] = useState(useDetails);
   let [modal, setModal] = useState(false);
+  // let [loading, setLoading] = useState(false);
 
   let handleInput = (e) => {
-    setUserData({ ...useDetails, [e.target.name]: e.target.value });
+    setUserData({ ...useData, [e.target.name]: e.target.value });
   };
 
-  let handleClick = (event) => {
+  let handleClick = () => {
+    // console.log(useData);
     axios
-      .post("/users", { useData })
+      .post(`${API}/users`, useData)
       .then((response) => {
         if (response.data.message) alert(response.data.message);
         else {
@@ -40,8 +41,8 @@ const AddUser = () => {
             name: null,
             lastName: null,
             profilePhoto: null,
-            loading: false,
           });
+          // setLoading(false);
         }
         console.log(response);
       })
@@ -71,7 +72,7 @@ const AddUser = () => {
           </FormGroup>
           <FormGroup>
             <Label for="lastName">Last Name(*):</Label>
-            <Input type="text" name="lastName" onChange={handleInput} />
+            <Input type="text" name="lastname" onChange={handleInput} />
           </FormGroup>
           <FormGroup>
             <Label for="profilePhoto">Profile Photo URL(*):</Label>

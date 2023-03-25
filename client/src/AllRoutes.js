@@ -1,12 +1,13 @@
 import React from "react";
-import { Route } from "react-router-dom";
+import { Route, Link } from "react-router-dom";
+import Dashboard from "./components/dashboard";
 import App from "./components/dashboard";
 const IndexPage = () => {
   return (
     <div>
       Welcome to Scrum Master
       <br />
-      <a href="/story/1">Homepage</a>
+      <Link href="/story/1">Homepage</Link>
     </div>
   );
 };
@@ -15,14 +16,15 @@ const NotFoundPage = () => {
     <div>
       <h2>Not Found</h2>
       <br />
-      <a href="/story/1">Homepage</a>
+      <Link href="/story/1">Homepage</Link>
     </div>
   );
 };
 export default (
   <Route>
+    <Route path="/" element={<IndexPage />} />
+
     <Route path="/story/:id" element={<App />} />
-    <Route exact path="/" element={<IndexPage />} />
     <Route path="*" exact component={NotFoundPage} />
   </Route>
 );

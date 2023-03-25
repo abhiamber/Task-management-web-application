@@ -1,11 +1,17 @@
 import moment from "moment";
-import ModalExampleDimmer from "./Modal";
+// import ModalExampleDimmer from "./Modal";
 import axios from "axios";
+import { API } from "../API";
+
 import Loader from "./Loader";
-const Task = ({ tasks, loading, filter }) => {
+import ModalExample from "./Modal";
+let content;
+
+const Task = ({ tasks, loading, filter, setShowFunc }) => {
+  // console.log(tasks, loading, filter);
   let api = (id) => {
     axios
-      .delete("/tasks/delete/" + id)
+      .delete(`${API}/tasks/delete/${id}`)
       .then(function (response) {
         if (response.status === "1") alert("ok");
         console.log(response);
@@ -14,8 +20,9 @@ const Task = ({ tasks, loading, filter }) => {
       .catch(function (error) {
         console.log(error);
       });
+    setShowFunc();
   };
-  let content;
+
   if (loading) {
     content = (
       <div className="loader">
@@ -41,20 +48,14 @@ const Task = ({ tasks, loading, filter }) => {
               <span className="task-due">
                 {moment(i.dueDate).format("DD.MM.YYYY")}
               </span>
-              <span className="task-contributors">
-                <img
-                  alt={
-                    i.contributors[0].name + " " + i.contributors[0].lastName
-                  }
-                  title={
-                    i.contributors[0].name + " " + i.contributors[0].lastName
-                  }
-                  src={"/assets/img/" + i.contributors[0].profilePhoto}
-                />
-              </span>
+              <span className="task-contributors"></span>
             </div>
             <div className={i.color} />
-            <ModalExampleDimmer propContent={i} classType="btnDashboard" />
+            <ModalExample
+              setShowFunc={setShowFunc}
+              propContent={i}
+              classType="btnDashboard"
+            />
           </li>
         );
       });

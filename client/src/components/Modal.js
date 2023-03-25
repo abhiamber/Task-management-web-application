@@ -11,23 +11,19 @@ import {
 } from "reactstrap";
 import moment from "moment";
 import axios from "axios";
-const ModalExample = (propContent, classType) => {
+import { API } from "../API";
+
+const ModalExample = ({ propContent, classType, setShowFunc }) => {
   let [modal, setModal] = useState(false);
   let [title, setTitle] = useState(propContent.title);
   let [content, setContent] = useState(propContent.content);
   let [status, setStatus] = useState(propContent.status);
 
-  let [color, setColour] = useState(propContent.color);
+  // let [color, setColour] = useState(propContent.color);
 
-  let handleInput = (e) => {
-    this.setState({
-      [e.target.name]: e.target.value,
-    });
-    console.log(this.state.title);
-  };
   let handleClick = (id) => {
     axios
-      .put(`/tasks/update/${id}`, {
+      .put(`${API}/tasks/update/${id}`, {
         title,
         content,
         status,
@@ -44,6 +40,7 @@ const ModalExample = (propContent, classType) => {
       .catch((error) => {
         console.log(error);
       });
+    setShowFunc();
   };
   let toggle = () => {
     setModal(!modal);
@@ -51,12 +48,7 @@ const ModalExample = (propContent, classType) => {
 
   return (
     <div>
-      <Button
-        color="primary"
-        size="sm"
-        className={classType}
-        onClick={this.toggle}
-      >
+      <Button color="primary" size="sm" className={classType} onClick={toggle}>
         <i className="fas fa-arrow-alt-circle-right" />
       </Button>
       <Modal isOpen={modal} toggle={toggle}>
@@ -66,7 +58,7 @@ const ModalExample = (propContent, classType) => {
             type="text"
             name="title"
             value={title}
-            onChange={handleInput}
+            onChange={(e) => setTitle(e.target.value)}
           />
         </ModalHeader>
         <ModalBody>
@@ -76,7 +68,7 @@ const ModalExample = (propContent, classType) => {
               type="textarea"
               name="content"
               value={content}
-              onChange={handleInput}
+              onChange={(e) => setContent(e.target.value)}
             />
           </FormGroup>
           <Label for="status">Status:</Label>
@@ -85,7 +77,7 @@ const ModalExample = (propContent, classType) => {
             value={status}
             name="status"
             id="status"
-            onChange={handleInput}
+            onChange={(e) => setStatus(e.target.value)}
           >
             <option value="1">Backlog</option>
             <option value="2">Todo</option>
@@ -100,22 +92,13 @@ const ModalExample = (propContent, classType) => {
           {moment(propContent.dueDate).format("DD.MM.YYYY")}
           <br />
           <i className="fas fa-user"></i> Created by: {propContent.createdBy}
+          <br />
+          <i className="fas fa-user"></i> Contributed by:{" "}
+          {propContent.contributors[0].name +
+            " " +
+            propContent.contributors[0].lastname}
         </ModalBody>
         <ModalFooter>
-          <img
-            height="35"
-            alt={
-              propContent.contributors[0].name +
-              " " +
-              propContent.contributors[0].lastName
-            }
-            title={
-              propContent.contributors[0].name +
-              " " +
-              propContent.contributors[0].lastName
-            }
-            src={"/assets/img/" + propContent.contributors[0].profilePhoto}
-          />
           <Button color="primary" onClick={() => handleClick(propContent._id)}>
             Update
           </Button>

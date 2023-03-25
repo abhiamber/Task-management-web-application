@@ -11,70 +11,64 @@ import {
 } from "reactstrap";
 import moment from "moment";
 import axios from "axios";
-let userContent;
+import { API } from "../../API";
+let task = {
+  title: "",
+  content: "",
+  contributors: "",
+  createdBy: "641e0ae624e37696d3d44b7d",
+  dueDate: "",
+  color: "",
+};
 
+let userContent;
+let changeColumnTitle = (number) => {
+  // console.log(number);
+  let newTitle;
+  if (number === "1") newTitle = "Backlog";
+  else if (number === "2") newTitle = "ToDo";
+  else if (number === "3") newTitle = "In Progress";
+  else newTitle = "Done";
+
+  return newTitle;
+};
 const AddModal = (props) => {
-  let task = {
-    modal: false,
-    title: "",
-    content: "",
-    contributors: "",
-    createdBy: "5af1921c0fe5703dd4a463ec",
-    dueDate: "",
-    status: props.status,
-    color: "",
-    storyId: props.storyType,
-    loading: false,
-    users: [],
-  };
+  let [modal, setModal] = useState(false);
+  let [users, setUsers] = useState([]);
+
   let [tasks, setTask] = useState(task);
 
-  useEffect(() => {
-    changeColumnTitle();
-  }, []);
-
-  let changeColumnTitle = (number) => {
-    let newTitle;
-    if (number === "1") newTitle = "Backlog";
-    else if (number === "2") newTitle = "ToDo";
-    else if (number === "3") newTitle = "In Progress";
-    else newTitle = "Done";
-
-    return newTitle;
-  };
   let handleInput = (e) => {
     setTask({ ...tasks, [e.target.name]: e.target.value });
-    console.log(this.state.dueDate);
   };
   let getUsers = () => {
     axios
-      .get("/users")
+      .get(`${API}/users`)
       .then((r) => {
-        setTask({ ...tasks, users: r.data, err: "" });
-      })
-      .then((r) => {
-        console.log(tasks.users);
+        // console.log(r, "");
+        setUsers(r.data);
+        // setTask({ ...tasks, users: r.data, err: "" });
       })
       .catch((e) => {
-        setTask({ ...tasks, err: e });
+        // setTask({ ...tasks, err: e });
+        console.log(e);
       });
   };
   let handleClick = (event) => {
     axios
-      .post("/tasks", {
+      .post(`${API}/tasks`, {
         title: tasks.title,
         content: tasks.content,
-        status: tasks.status,
+        status: props.status,
         contributors: tasks.contributors,
         dueDate: tasks.dueDate,
         color: tasks.color,
-        storyId: tasks.storyId,
+        storyId: props.storyType,
         createdBy: tasks.createdBy,
       })
       .then((response) => {
         if (response.data.message) alert(response.data.message);
         else {
-          toggle();
           setTask({
             ...tasks,
             ttitle: null,
@@ -89,32 +83,35 @@ const AddModal = (props) => {
       .catch((error) => {
         console.log(error);
       });
+    toggle();
+    props.setShowFunc();
   };
   let toggle = () => {
     getUsers();
-    setTask({ ...tasks, modal: !tasks.modal });
+    setModal(!modal);
   };
+  useEffect(() => {
+    getUsers();
+  }, []);
 
-  const { users } = tasks;
-  let userContent;
-  if (!users) userContent = <option value="">Loading...</option>;
+  if (users.length === 0) userContent = <option value="">Loading...</option>;
   else {
-    userContent = users.map((user, index) => (
+    let filterData = users.filter(
+      (user) => user._id !== "641e0ae624e37696d3d44b7d"
+    );
+    userContent = filterData.map((user, index) => (
       <option key={index} value={user._id}>
-        {user.name + " " + user.lastName}
+        {user.name + " " + user.lastname}
       </option>
     ));
   }
+
   return (
     <div>
       <i className="fas fa-plus-circle customAddTask" onClick={toggle}></i>
-      <Modal
-        isOpen={tasks.modal}
-        toggle={toggle}
-        // className={this.props.className}
-      >
+      <Modal isOpen={modal} toggle={toggle} className={props.className}>
         <ModalHeader toggle={toggle}>
-          Create a New Task to {changeColumnTitle(tasks.status)}
+          Create a New Task to {changeColumnTitle(props.status)}
         </ModalHeader>
         <ModalBody>
           <FormGroup>

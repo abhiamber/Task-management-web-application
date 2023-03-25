@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Modal,
@@ -10,10 +10,11 @@ import {
   Label,
 } from "reactstrap";
 import axios from "axios";
+import { API } from "../../API";
 
-const AddStory = () => {
+const AddStory = ({ setShowFunc }) => {
   let [modal, setModal] = useState(false);
-  let [count, setCount] = useState(2);
+  let [count, setCount] = useState(0);
   let [title, setTilte] = useState("");
   let [createdBy, setCreatedBy] = useState("");
 
@@ -27,20 +28,22 @@ const AddStory = () => {
 
   let getStoryCount = () => {
     axios
-      .get(`/story/count`)
+      .get(`${API}/story/count`)
       .then((r) => {
-        setCount(r.data.count);
+        // console.log(r.data[0].count);
+        setCount(r.data[0].count + 2);
       })
       .catch((e) => {
-        this.setState({
-          err: e,
-        });
+        setCount(2);
+
+        console.log(e);
       });
   };
-  let handleClick = (event) => {
-    getStoryCount();
+  let handleClick = async () => {
+    // await getStoryCount();
+
     axios
-      .post("/story", {
+      .post(`${API}/story`, {
         title,
         createdBy,
         storyId: count,
@@ -48,20 +51,26 @@ const AddStory = () => {
       .then((response) => {
         if (response.data.error) alert(response.data.error);
         else {
-          toggle();
+          // toggle();
           setTilte(null);
           setCreatedBy(null);
         }
-        console.log(response);
+        // console.log(response);
       })
       .catch((error) => {
         console.log(error);
       });
+    setShowFunc();
+    toggle();
   };
   let toggle = () => {
     setModal(!modal);
   };
 
+  useEffect(() => {
+    getStoryCount();
+  }, [modal]);
+  // console.log(count);
   return (
     <div>
       <Button color="secondary" onClick={toggle}>

@@ -25,7 +25,11 @@ const Tooltips = (props) => {
         {props.content}
       </Tooltip>
 
-      <AddTask storyType={props.storyType} status={props.id} />
+      <AddTask
+        setShowFunc={props.setShowFunc}
+        storyType={props.storyType}
+        status={props.id}
+      />
     </span>
   );
 };
