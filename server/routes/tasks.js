@@ -31,126 +31,29 @@ router.get("/counter", (req, res) => {
     });
 });
 
-router.get("/:id", (req, res) => {
-  const promise = TaskModel.aggregate([
-    {
-      $match: {
-        storyId: parseInt(req.params.id),
-      },
-    },
-    {
-      $lookup: {
-        from: "users",
-        localField: "contributors",
-        foreignField: "_id",
-        as: "contributors",
-      },
-    },
-    {
-      $unwind: {
-        path: "$contributors",
-      },
-    },
-    {
-      $group: {
-        _id: {
-          _id: "$_id",
-          content: "$content",
-          title: "$title",
-          status: "$status",
-          date: "$date",
-          color: "$color",
-          dueDate: "$dueDate",
-          createdBy: "$createdBy",
-        },
-        contributors: {
-          $push: "$contributors",
-        },
-      },
-    },
-    {
-      $project: {
-        _id: "$_id._id",
-        content: "$_id.content",
-        title: "$_id.title",
-        status: "$_id.status",
-        date: "$_id.date",
-        dueDate: "$_id.dueDate",
-        color: "$_id.color",
-        createdBy: "$_id.createdBy",
-        contributors: "$contributors",
-      },
-    },
-  ]);
-  promise
-    .then((data) => {
-      res.json(data);
-    })
-    .catch((err) => {
-      res.json(err);
-    });
+router.get("/:id", async (req, res) => {
+  try {
+    const tasks = await TaskModel.find({ storyId: req.params.id })
+      .populate({
+        path: "storyId",
+        model: "Story",
+      })
+      .populate({
+        path: "contributors",
+        model: "User",
+      })
+      .populate({
+        path: "createdBy",
+        model: "User",
+      });
+
+    return res.json(tasks);
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
+  }
 });
-//for testign no used
-router.get("/task/:id", (req, res) => {
-  const promise = TaskModel.aggregate([
-    {
-      $match: {
-        _id: parseInt(req.params.id),
-      },
-    },
-    {
-      $lookup: {
-        from: "users",
-        localField: "contributors",
-        foreignField: "_id",
-        as: "contributors",
-      },
-    },
-    {
-      $unwind: {
-        path: "$contributors",
-      },
-    },
-    {
-      $group: {
-        _id: {
-          _id: "$_id",
-          content: "$content",
-          title: "$title",
-          status: "$status",
-          date: "$date",
-          color: "$color",
-          dueDate: "$dueDate",
-          createdBy: "$createdBy",
-        },
-        contributors: {
-          $push: "$contributors",
-        },
-      },
-    },
-    {
-      $project: {
-        _id: "$_id._id",
-        content: "$_id.content",
-        title: "$_id.title",
-        status: "$_id.status",
-        date: "$_id.date",
-        dueDate: "$_id.dueDate",
-        color: "$_id.color",
-        createdBy: "$_id.createdBy",
-        contributors: "$contributors",
-      },
-    },
-  ]);
-  promise
-    .then((data) => {
-      res.json(data);
-    })
-    .catch((err) => {
-      res.json(err);
-    });
-});
-//todo update
+
+//task update
 router.put("/update/:id", (req, res) => {
   const promise = TaskModel.findByIdAndUpdate(req.params.id, req.body);
   promise
@@ -162,7 +65,7 @@ router.put("/update/:id", (req, res) => {
     });
 });
 
-//Task Deelete
+//Task Delete
 router.delete("/delete/:id", (req, res) => {
   const promise = TaskModel.findByIdAndRemove(req.params.id);
   promise

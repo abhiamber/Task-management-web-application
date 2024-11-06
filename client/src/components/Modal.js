@@ -19,28 +19,18 @@ const ModalExample = ({ propContent, classType, setShowFunc }) => {
   let [content, setContent] = useState(propContent.content);
   let [status, setStatus] = useState(propContent.status);
 
-  // let [color, setColour] = useState(propContent.color);
-
-  let handleClick = (id) => {
-    axios
-      .put(`${API}/tasks/update/${id}`, {
+  let handleClick = async (id) => {
+    try {
+      let res = await axios.put(`${API}/tasks/update/${id}`, {
         title,
         content,
         status,
-      })
-      .then((response) => {
-        if (response.data.message) alert(response.data.message);
-        else {
-          toggle();
-          setTitle(null);
-          setContent(null);
-        }
-        console.log(response);
-        setShowFunc();
-      })
-      .catch((error) => {
-        console.log(error);
       });
+      setTitle(null);
+      setContent(null);
+      toggle();
+      setShowFunc();
+    } catch (err) {}
   };
   let toggle = () => {
     setModal(!modal);
@@ -48,11 +38,22 @@ const ModalExample = ({ propContent, classType, setShowFunc }) => {
 
   return (
     <div>
-      <Button color="primary" size="sm" className={classType} onClick={toggle}>
+      <Button
+        color="primary"
+        size="sm"
+        className={propContent}
+        onClick={toggle}
+      >
         <i className="fas fa-arrow-alt-circle-right" />
       </Button>
       <Modal isOpen={modal} toggle={toggle}>
-        <ModalHeader toggle={toggle}>
+        <ModalHeader
+          close={
+            <Button color="secondary" onClick={toggle}>
+              <i className="fas fa-times-circle"></i>
+            </Button>
+          }
+        >
           <Label for="title">Task Title:</Label>
           <Input
             type="text"
@@ -91,12 +92,15 @@ const ModalExample = ({ propContent, classType, setShowFunc }) => {
           <i className="fas fa-clock"></i> Due Date:{" "}
           {moment(propContent.dueDate).format("DD.MM.YYYY")}
           <br />
-          <i className="fas fa-user"></i> Created by: {propContent.createdBy}
+          <i className="fas fa-user"></i> Created by:{" "}
+          {propContent.createdBy.firstName +
+            " " +
+            propContent.createdBy.lastName}
           <br />
           <i className="fas fa-user"></i> Contributed by:{" "}
-          {propContent.contributors[0].name +
+          {propContent.contributors.firstName +
             " " +
-            propContent.contributors[0].lastname}
+            propContent.contributors.lastName}
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={() => handleClick(propContent._id)}>

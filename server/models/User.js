@@ -1,17 +1,13 @@
 const { Schema, model } = require("mongoose");
 const UserSchema = new Schema(
   {
-    username: {
+    userName: {
       type: String,
-      unique: [true, "Please different username"],
-      reuired: true,
+      unique: [true, "Please provide different userName"],
+      required: [true, "username is required"],
     },
-    name: String,
-    lastname: String,
-    public: {
-      type: Boolean,
-      default: false,
-    },
+    firstName: String,
+    lastName: String,
     profilePhoto: {
       type: String,
       default: "default.jpg",
@@ -24,6 +20,6 @@ const UserSchema = new Schema(
   { versionKey: false }
 );
 
-let UserModel = model("user", UserSchema);
+let UserModel = model("User", UserSchema);
 
 module.exports = UserModel;

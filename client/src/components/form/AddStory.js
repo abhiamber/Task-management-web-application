@@ -12,78 +12,72 @@ import {
 import axios from "axios";
 import { API } from "../../API";
 
-const AddStory = ({ setShowFunc }) => {
+const AddStory = ({ setShowFunc, users }) => {
   let [modal, setModal] = useState(false);
-  let [count, setCount] = useState(0);
-  let [title, setTilte] = useState("");
+  let [title, setTitle] = useState("");
   let [createdBy, setCreatedBy] = useState("");
 
   let handleInput = (e) => {
     if (e.target.name === "title") {
-      setTilte(e.target.value);
+      setTitle(e.target.value);
     } else if (e.target.name === "createdBy") {
       setCreatedBy(e.target.value);
     }
   };
 
-  let getStoryCount = () => {
-    axios
-      .get(`${API}/story/count`)
-      .then((r) => {
-        // console.log(r.data[0].count);
-        setCount(r.data[0].count + 2);
-      })
-      .catch((e) => {
-        setCount(2);
-
-        console.log(e);
-      });
-  };
   let handleClick = async () => {
-    axios
-      .post(`${API}/story`, {
+    try {
+      let res = await axios.post(`${API}/story`, {
         title,
         createdBy,
-        storyId: count,
-      })
-      .then((response) => {
-        if (response.data.error) alert(response.data.error);
-        else {
-          // toggle();
-          setTilte(null);
-          setCreatedBy(null);
-        }
-        // console.log(response);
-        setShowFunc();
-      })
-      .catch((error) => {
-        console.log(error);
       });
+      setTitle(null);
+      setCreatedBy(null);
+      setShowFunc();
+    } catch (err) {}
+
     toggle();
   };
   let toggle = () => {
     setModal(!modal);
   };
 
-  useEffect(() => {
-    getStoryCount();
-  }, [modal]);
-  // console.log(count);
+  const userContent = users.map((user, index) => (
+    <option key={index} value={user._id}>
+      {user.firstName + " " + user.lastName}
+    </option>
+  ));
   return (
     <div>
       <Button color="secondary" onClick={toggle}>
         <i className="fas fa-plus-circle" /> Add Project
       </Button>
       <Modal isOpen={modal} toggle={toggle}>
-        <ModalHeader toggle={toggle}>Add Story</ModalHeader>
+        <ModalHeader
+          close={
+            <Button color="secondary" onClick={toggle}>
+              <i className="fas fa-times-circle"></i>
+            </Button>
+          }
+        >
+          Add Story
+        </ModalHeader>
         <ModalBody>
           <FormGroup>
-            <Label for="title">Story Title(*):</Label>
+            <Label for="title">Story Title(*)</Label>
             <Input type="text" name="title" onChange={handleInput} />
           </FormGroup>
           <FormGroup>
-            <Label for="createdBy">Created by(*):</Label>
-            <Input type="text" name="createdBy" onChange={handleInput} />
+            <Label for="createdBy">Created by(*)</Label>
+            <Input
+              type="select"
+              name="createdBy"
+              id="createdBy"
+              onChange={handleInput}
+            >
+              <option value="">Choose:</option>
+              {userContent}
+            </Input>
           </FormGroup>
         </ModalBody>
         <ModalFooter>

@@ -43,7 +43,8 @@ router.get("/", (req, res) => {
       res.json(err);
     });
 });
-//Story Update
+
+//get single story
 router.get("/:id", (req, res) => {
   const promise = StoryModel.findOne({ storyId: parseInt(req.params.id) });
   promise

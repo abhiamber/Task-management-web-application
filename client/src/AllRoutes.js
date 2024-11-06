@@ -1,30 +1,32 @@
 import React from "react";
-import { Route, Link } from "react-router-dom";
-import Dashboard from "./components/dashboard";
-import App from "./components/dashboard";
-const IndexPage = () => {
+import { Route, Link, Routes } from "react-router-dom";
+import Dashboard from "./components/Dashboard";
+
+function AllRoutes() {
   return (
-    <div>
-      Welcome to Scrum Master
-      <br />
-      <Link href="/story/1">Homepage</Link>
-    </div>
+    <Routes>
+      <Route path="/" element={<IndexPage />} />
+      <Route path="/story" element={<Dashboard />} />
+      <Route path="*" element={<NotFoundPage />} />
+    </Routes>
   );
-};
+}
+export default AllRoutes;
+
 const NotFoundPage = () => {
   return (
     <div>
-      <h2>Not Found</h2>
-      <br />
-      <Link href="/story/1">Homepage</Link>
+      <h2 className="pt-5">No Page Found</h2>
+      <Link to="/story">Homepage</Link>
     </div>
   );
 };
-export default (
-  <Route>
-    <Route path="/" element={<IndexPage />} />
 
-    <Route path="/story/:id" element={<App />} />
-    <Route path="*" exact component={NotFoundPage} />
-  </Route>
-);
+const IndexPage = () => {
+  return (
+    <div>
+      <h2 className="pt-5"> Welcome to Scrum Master</h2>
+      <Link to="/story">Homepage</Link>
+    </div>
+  );
+};

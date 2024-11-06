@@ -1,15 +1,14 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+
 const StorySchema = new Schema({
   title: {
     type: String,
-    maxlength: 30,
+    maxLength: 30,
   },
   createdBy: {
-    type: String,
-  },
-  storyId: {
-    type: Number,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
   createdDate: {
@@ -17,5 +16,5 @@ const StorySchema = new Schema({
     default: Date.now,
   },
 });
-
-module.exports = mongoose.model("story", StorySchema);
+let StoryModel = mongoose.model("Story", StorySchema);
+module.exports = StoryModel;

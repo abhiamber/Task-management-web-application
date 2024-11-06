@@ -7,90 +7,87 @@ import AddStory from "./form/AddStory";
 import { Story } from "./Story";
 import { API } from "../API";
 
-let storyTable;
-
 const Dashboard = () => {
-  let [id, setId] = useState(Number(localStorage.getItem("id")) || 1);
-  let [task, setTask] = useState([]);
   let [stories, setStories] = useState([]);
-  let [loading, setLoading] = useState(true);
+  let [loading, setLoading] = useState(false);
+  let [selectedStory, setSelectedStory] = useState();
+  let [users, setUsers] = useState([]);
+  let [task, setTask] = useState([]);
 
-  let getStoryDetails = () => {
-    axios
-      .get(`${API}/story`)
-      .then((r) => {
-        // console.log(r.data, "nnhjbhj");
-        setStories(r.data);
-      })
-
-      .catch((e) => {
-        console.log(e);
-      });
+  let getSingleStory = async () => {
+    setLoading(true);
+    try {
+      let { data } = await axios.get(`${API}/tasks/${selectedStory._id}`);
+      setTask(data);
+    } catch (err) {}
+    setLoading(false);
   };
 
-  // ****************get task***********
-  let getData = () => {
-    axios
-      .get(`${API}/tasks/${id}`)
-      .then((r) => {
-        // console.log(r.data, "bj", id);
-        setTask(r.data);
-      })
-      .then(() => {
-        setLoading(false);
-      })
-      .catch((e) => {
-        if (!e.response) {
-          setLoading(true);
-        } else setLoading(false);
-      });
+  let getAllStory = async () => {
+    setLoading(true);
+    try {
+      let { data } = await axios.get(`${API}/story`);
+      setStories(data);
+    } catch (err) {}
+    setLoading(false);
   };
+
+  let getUsers = async () => {
+    try {
+      let { data } = await axios.get(`${API}/users`);
+      setUsers(data);
+    } catch (err) {}
+  };
+
   useEffect(() => {
-    getStoryDetails();
-    getData();
-    localStorage.setItem("id", id);
-  }, [id]);
+    getAllStory();
+  }, []);
 
-  // console.log(typeof id);
+  useEffect(() => {
+    if (selectedStory) {
+      getSingleStory();
+      getUsers();
+    }
+  }, [selectedStory]);
+
   return (
     <div>
       <div className="side">
-        <span className="logo">Task Manger</span>
+        <Link to="/">
+          <span className="logo">Task Manager</span>
+        </Link>
 
         <ul className="side-menu">
-          {storyTable}
-
-          {stories.map((story, index) => {
+          {stories?.map((story, index) => {
             return (
               <li
                 key={index}
-                onClick={() => {
-                  setId(Number(story.storyId));
-                }}
+                onClick={() => setSelectedStory(story)}
+                className="pt-3"
+                style={{ cursor: "pointer" }}
               >
-                <Link to={`/story/${story.storyId}`} activeClassName="active">
-                  <i className="fas fa-list-alt"></i>
-                  <span className="menu-text">{story.title}</span>
-                </Link>
+                <i className="fas fa-list-alt" />
+                <span className="menu-text">{story.title}</span>
               </li>
             );
           })}
         </ul>
 
         <div className="otherMenu">
-          <AddStory setShowFunc={getStoryDetails} />
+          <AddStory setShowFunc={getAllStory} users={users} />
         </div>
       </div>
       <div className="con">
-        <Header setId={setId} />
+        <Header getUsers={getUsers} />
         <aside>
-          <Story
-            setShowFunc={getData}
-            storyName={stories.filter((i) => i.storyId === id)}
-            storyType={id}
-            tasks={task}
-            loading={loading}
-          />
+          {selectedStory && (
+            <Story
+              setShowFunc={getSingleStory}
+              selectedStory={selectedStory}
+              tasks={task}
+              loading={loading}
+            />
+          )}
         </aside>
       </div>
     </div>

@@ -1,17 +1,16 @@
-var createError = require("http-errors");
-var express = require("express");
+let express = require("express");
 require("dotenv").config();
 let PORT = process.env.PORT || 8080;
 
-var cookieParser = require("cookie-parser");
+let cookieParser = require("cookie-parser");
 
-var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
-var tasksRouter = require("./routes/tasks");
-var storiesRouter = require("./routes/story");
-var app = express();
+let indexRouter = require("./routes/index");
+let usersRouter = require("./routes/users");
+let tasksRouter = require("./routes/tasks");
+let storiesRouter = require("./routes/story");
+let app = express();
 let cors = require("cors");
-const connect = require("./config/db");
+const { connect } = require("./config/db");
 app.use(cors());
 
 app.use(express.json());
@@ -25,5 +24,5 @@ app.use("/story", storiesRouter);
 
 app.listen(PORT, async () => {
   await connect();
-  console.log("server is working");
+  console.log(`server is working on ${PORT}`);
 });

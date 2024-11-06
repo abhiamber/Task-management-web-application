@@ -1,32 +1,28 @@
 import Task from "./Task";
 import Tooltips from "./Tooltip";
 
-export const Story = (props) => {
-  // console.log(props.storyName[0]);
+export const Story = ({ selectedStory, setShowFunc, tasks, loading }) => {
   return (
     <div className="container">
       <div className="space">
-        <h2 className="story">
-          {props.storyName[0] ? props.storyName[0].title : "Select or Create"}
-        </h2>
+        <h2 className="story">{selectedStory.title ?? "Select or Create"}</h2>
       </div>
       <div className="row">
         <div className="col-sm mcell mcolor1">
           <div className="mcell-title story">
             <b className="fas fa-lightbulb" /> Backlog
             <Tooltips
-              setShowFunc={props.setShowFunc}
+              setShowFunc={setShowFunc}
               id={1}
               content="You can do what you want to do with this column"
               placement="top"
-              storyType={props.storyType}
-              storyName={props.storyName}
+              selectedStory={selectedStory}
             />
           </div>
           <Task
-            setShowFunc={props.setShowFunc}
-            tasks={props.tasks}
-            loading={props.loading}
+            setShowFunc={setShowFunc}
+            tasks={tasks}
+            loading={loading}
             filter="1"
           />
         </div>
@@ -34,18 +30,17 @@ export const Story = (props) => {
           <div className="mcell-title story">
             <b className="fas fa-bars" /> TODO
             <Tooltips
-              storyName={props.storyName}
-              setShowFunc={props.setShowFunc}
+              selectedStory={selectedStory}
+              setShowFunc={setShowFunc}
               id={2}
               content="You can do what you want to do with this column"
               placement="top"
-              storyType={props.storyType}
             />
           </div>
           <Task
-            setShowFunc={props.setShowFunc}
-            tasks={props.tasks}
-            loading={props.loading}
+            setShowFunc={setShowFunc}
+            tasks={tasks}
+            loading={loading}
             filter="2"
           />
         </div>
@@ -54,18 +49,17 @@ export const Story = (props) => {
           <div className="mcell-title story">
             <b className="fas fa-spinner"></b> In Progress
             <Tooltips
-              storyName={props.storyName}
-              setShowFunc={props.setShowFunc}
+              setShowFunc={setShowFunc}
               id={3}
               content="You can do what you want to do with this column"
               placement="top"
-              storyType={props.storyType}
+              selectedStory={selectedStory}
             />{" "}
           </div>
           <Task
-            setShowFunc={props.setShowFunc}
-            tasks={props.tasks}
-            loading={props.loading}
+            setShowFunc={setShowFunc}
+            tasks={tasks}
+            loading={loading}
             filter="3"
           />
         </div>
@@ -73,18 +67,17 @@ export const Story = (props) => {
           <div className="mcell-title story">
             <b className="fas fa-check" /> Done
             <Tooltips
-              storyName={props.storyName}
-              setShowFunc={props.setShowFunc}
+              setShowFunc={setShowFunc}
               id={4}
               content="You can do what you want to do with this column"
               placement="top"
-              storyType={props.storyType}
+              selectedStory={selectedStory}
             />{" "}
           </div>
           <Task
-            setShowFunc={props.setShowFunc}
-            tasks={props.tasks}
-            loading={props.loading}
+            setShowFunc={setShowFunc}
+            tasks={tasks}
+            loading={loading}
             filter="4"
           />
         </div>

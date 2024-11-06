@@ -4,10 +4,8 @@ const router = express.Router();
 const User = require("../models/User");
 
 router.post("/", async (req, res) => {
-  console.log(req.body);
   try {
     const user = new User(req.body);
-
     await user.save();
     res.json(user);
   } catch (e) {
@@ -26,7 +24,6 @@ router.get("/", (req, res, next) => {
       res.json(err);
     });
 });
-//User Update
 
 //User delete
 router.delete("/delete/:id", (req, res) => {

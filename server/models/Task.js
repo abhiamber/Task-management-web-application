@@ -14,7 +14,7 @@ const TaskSchema = new Schema({
     default: Date.now,
   },
   contributors: {
-    type: Schema.Types.ObjectId, //dont forget that!
+    type: Schema.Types.ObjectId,
     required: true,
   },
   status: {
@@ -23,7 +23,6 @@ const TaskSchema = new Schema({
   },
   createdBy: {
     type: String,
-    required: true,
   },
   dueDate: {
     type: Date,
@@ -34,9 +33,11 @@ const TaskSchema = new Schema({
     default: "#2196f3",
   },
   storyId: {
-    type: Number,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Story",
     required: true,
   },
 });
 
-module.exports = mongoose.model("task", TaskSchema);
+let TaskModel = mongoose.model("Task", TaskSchema);
+module.exports = TaskModel;

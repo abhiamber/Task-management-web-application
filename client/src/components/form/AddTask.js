@@ -16,14 +16,12 @@ let task = {
   title: "",
   content: "",
   contributors: "",
-  // createdBy: "641e0ae624e37696d3d44b7d",
   dueDate: "",
   color: "",
 };
 
 let userContent;
 let changeColumnTitle = (number) => {
-  // console.log(number);
   let newTitle;
   if (number === 1) newTitle = "Backlog";
   else if (number === 2) newTitle = "ToDo";
@@ -32,58 +30,36 @@ let changeColumnTitle = (number) => {
 
   return newTitle;
 };
-const AddModal = (props) => {
-  // console.log(props);
+const AddModal = ({ selectedStory, status, className, setShowFunc }) => {
   let [modal, setModal] = useState(false);
   let [users, setUsers] = useState([]);
-
   let [tasks, setTask] = useState(task);
 
   let handleInput = (e) => {
     setTask({ ...tasks, [e.target.name]: e.target.value });
   };
-  let getUsers = () => {
-    axios
-      .get(`${API}/users`)
-      .then((r) => {
-        // console.log(r, "");
-        setUsers(r.data);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+  let getUsers = async () => {
+    try {
+      let { data } = await axios.get(`${API}/users`);
+      setUsers(data);
+    } catch (err) {}
   };
-  let handleClick = (event) => {
-    axios
-      .post(`${API}/tasks`, {
+
+  let handleClick = async (event) => {
+    try {
+      let { data } = await axios.post(`${API}/tasks`, {
         title: tasks.title,
         content: tasks.content,
-        status: props.status,
+        status: status,
         contributors: tasks.contributors,
         dueDate: tasks.dueDate,
         color: tasks.color,
-        storyId: props.storyType,
-        createdBy: props.storyName[0].createdBy,
-      })
-      .then((response) => {
-        if (response.data.message) alert(response.data.message);
-        else {
-          setTask({
-            ...tasks,
-            ttitle: null,
-            content: null,
-            contributors: null,
-            dueDate: null,
-            loading: false,
-          });
-        }
-        props.setShowFunc("jnk,");
-
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
+        storyId: selectedStory._id,
+        createdBy: selectedStory.createdBy,
       });
+
+      setShowFunc();
+    } catch (err) {}
     toggle();
   };
   let toggle = () => {
@@ -94,16 +70,11 @@ const AddModal = (props) => {
     getUsers();
   }, []);
 
-  // console.log(creartor);
-
   if (users.length === 0) userContent = <option value="">Loading...</option>;
   else {
-    let filterData = users.filter(
-      (user) => user._id !== "641e0ae624e37696d3d44b7d"
-    );
-    userContent = filterData.map((user, index) => (
+    userContent = users.map((user, index) => (
       <option key={index} value={user._id}>
-        {user.name + " " + user.lastname}
+        {user.firstName + " " + user.lastName}
       </option>
     ));
   }
@@ -111,9 +82,15 @@ const AddModal = (props) => {
   return (
     <div>
       <i className="fas fa-plus-circle customAddTask" onClick={toggle}></i>
-      <Modal isOpen={modal} toggle={toggle} className={props.className}>
-        <ModalHeader toggle={toggle}>
-          Create a New Task to {changeColumnTitle(props.status)}
+      <Modal isOpen={modal} toggle={toggle} className={className}>
+        <ModalHeader
+          close={
+            <Button color="secondary" onClick={toggle}>
+              <i className="fas fa-times-circle"></i>
+            </Button>
+          }
+        >
+          Create a New Task to {changeColumnTitle(status)}
         </ModalHeader>
         <ModalBody>
           <FormGroup>

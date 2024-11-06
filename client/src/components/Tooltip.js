@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Tooltip } from "reactstrap";
 import AddTask from "./form/AddTask";
 
-const Tooltips = (props) => {
+const Tooltips = ({ selectedStory, id, placement, setShowFunc, content }) => {
   let [tooltipOpen, settooltipOpen] = useState(false);
 
   let toggle = () => {
@@ -13,23 +13,22 @@ const Tooltips = (props) => {
     <span>
       <i
         className="fas fa-question-circle"
-        id={"Tooltip-" + props.id}
+        id={"Tooltip-" + id}
         data-toggle="tooltip"
-      ></i>
+      />
       <Tooltip
-        placement={props.placement}
+        placement={placement}
         isOpen={tooltipOpen}
-        target={"Tooltip-" + props.id}
+        target={"Tooltip-" + id}
         toggle={toggle}
       >
-        {props.content}
+        {content}
       </Tooltip>
 
       <AddTask
-        setShowFunc={props.setShowFunc}
-        storyType={props.storyType}
-        status={props.id}
-        storyName={props.storyName}
+        setShowFunc={setShowFunc}
+        selectedStory={selectedStory}
+        status={id}
       />
     </span>
   );
